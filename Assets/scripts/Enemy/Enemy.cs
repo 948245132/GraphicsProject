@@ -5,7 +5,11 @@ using UnityEngine;
 public class Enemy : Entity
 {
     [SerializeField] protected LayerMask whatIsPlayer;
+    [Header("眩晕相关")]
+    public float stunDuration;
+    public Vector2 stunDirection;
 
+    [Space(10)]
     [Header("移动相关")]
     public float moveSpeed;
     public float idleTime;

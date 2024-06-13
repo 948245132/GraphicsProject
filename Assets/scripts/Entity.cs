@@ -11,10 +11,18 @@ public class Entity : MonoBehaviour
     #region 组件相关
     public Animator anim { get; private set; }
     public Rigidbody2D rb { get; private set; }
+    public EntityFX fx { get; private set; }
     #endregion
+
+    [Header("受击相关")]
+    [SerializeField] protected Vector2 knockbackDirection;
+    [SerializeField] protected float knockbackDuration;
+    protected bool isKnocked;
 
     [Space(10)]
     [Header("碰撞相关")]
+    public Transform attackCheck;
+    public float attackCheckRadius;
     [SerializeField] protected Transform groundCheck;
     [SerializeField] protected float groundCheckDistance;
     [SerializeField] protected Transform wallCheck;
@@ -29,6 +37,7 @@ public class Entity : MonoBehaviour
 
     }
     protected virtual void Start(){
+        fx = GetComponent<EntityFX>();
         anim = GetComponentInChildren<Animator>();
         rb = GetComponent<Rigidbody2D>();
     }
@@ -37,16 +46,43 @@ public class Entity : MonoBehaviour
 
     }
 
+    public virtual void Damage() {
+        fx.StartCoroutine("FlashFX");
+        StartCoroutine("HitKonckback");
+       // Debug.Log(gameObject.name + "was Damage");
+    }
+
+    protected virtual IEnumerator HitKonckback() {
+        isKnocked = true;
+
+        rb.velocity = new Vector2(knockbackDirection.x * -facingDir, knockbackDirection.y);
+
+        yield return new WaitForSeconds(knockbackDuration);
+       
+        isKnocked = false;
+    }
+
     #region 速度相关
 
-    public void SetZeroVelocity() => rb.velocity = new Vector2(0, 0);
+    public void SetZeroVelocity() {
+        //如果角色正处于受击状态则无法控制
+        if (isKnocked)
+            return;
 
-    /// <summary>
-    /// 设置速度
-    /// </summary>
-    /// <param name="_xVelocity">x方向的速度</param>
-    /// <param name="_yVelocity">y方向的速度</param>
-    public void SetVelocity(float _xVelocity, float _yVelocity) {
+        rb.velocity = new Vector2(0, 0);
+    
+    }
+
+        /// <summary>
+        /// 设置速度
+        /// </summary>
+        /// <param name="_xVelocity">x方向的速度</param>
+        /// <param name="_yVelocity">y方向的速度</param>
+        public void SetVelocity(float _xVelocity, float _yVelocity) {
+        //如果角色正处于受击状态则无法控制
+        if (isKnocked)
+            return;
+
         rb.velocity = new Vector2(_xVelocity, _yVelocity);
         FilpController(_xVelocity);
     }
@@ -93,6 +129,8 @@ public class Entity : MonoBehaviour
     protected virtual void OnDrawGizmos() {
         Gizmos.DrawLine(groundCheck.position, new Vector3(groundCheck.position.x, groundCheck.position.y - groundCheckDistance));
         Gizmos.DrawLine(wallCheck.position, new Vector3(wallCheck.position.x + wallCheckDistance * facingDir, wallCheck.position.y));
+
+        Gizmos.DrawWireSphere(attackCheck.position, attackCheckRadius);
     }
     #endregion
 
