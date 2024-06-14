@@ -21,11 +21,13 @@ public class Player : Entity
     [Header("冲刺相关")]
     public float dashSpeed;
     public float dashDiration;
-    [SerializeField] private float dashCoolDown;
-    private float dashUsageTimer;
+   
     public float dashDir { get; private set; }
 
     #region 状态相关
+
+    public SkillManager skill { get; private set; }
+
     public PlayerStateMachine stateMachine { get; private set; }
 
     public PlayerIdleState idleState { get; private set; }
@@ -58,6 +60,9 @@ public class Player : Entity
 
     protected override void Start() {
         base.Start();
+
+        skill = SkillManager.instance;
+
         stateMachine.Initialize(idleState);
     }
 
@@ -82,11 +87,11 @@ public class Player : Entity
         if (IsWallDetected())
             return;
 
-        dashUsageTimer -= Time.deltaTime;
+       // dashUsageTimer -= Time.deltaTime;
         
-        if (Input.GetKeyDown(KeyCode.LeftShift) && dashUsageTimer < 0) {
+        if (Input.GetKeyDown(KeyCode.LeftShift) && skill.dash.CanUseSkill()) {
 
-            dashUsageTimer = dashCoolDown;
+           // dashUsageTimer = dashCoolDown;
 
             dashDir = Input.GetAxisRaw("Horizontal");
 
