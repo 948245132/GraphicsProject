@@ -4,9 +4,15 @@ using UnityEngine;
 
 public class Skill : MonoBehaviour
 {
+    protected Player player;
+
     [Header("¿‰»¥")]
     [SerializeField] protected float coolDown;
     protected float coolDownTimer;
+
+    protected virtual void Start() {
+        player = PlayerManager.instance.player;
+    }
 
     protected virtual void Update() {
         coolDownTimer -= Time.deltaTime;
