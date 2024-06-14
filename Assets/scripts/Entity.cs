@@ -58,8 +58,8 @@ public class Entity : MonoBehaviour
         rb.velocity = new Vector2(knockbackDirection.x * -facingDir, knockbackDirection.y);
 
         yield return new WaitForSeconds(knockbackDuration);
-       
         isKnocked = false;
+        rb.velocity = new Vector2(0, 0);
     }
 
     #region 速度相关

@@ -3,6 +3,10 @@ using UnityEngine;
 
 public class Player : Entity
 {
+    [Header("反击相关")]
+    public float counterAttackDuration = .2f;
+
+    [Space(10)]
     [Header("攻击相关")]
     public Vector2[] attackMovement;
 
@@ -31,8 +35,8 @@ public class Player : Entity
     public PlayerDashState dashState { get; private set; }
     public PlayerWallSlideState wallSlideState { get; private set; }
     public PlayerWallJumpState wallJumpState { get; private set; }
-
     public PlayerPrimaryAttackState primaryAttack { get; private set; }
+    public PlayerCounterAttackState counterAttack { get; private set; }
 
     #endregion
 
@@ -49,6 +53,7 @@ public class Player : Entity
         wallJumpState = new PlayerWallJumpState(this, stateMachine, "Jump");
 
         primaryAttack = new PlayerPrimaryAttackState(this, stateMachine, "Attack");
+        counterAttack = new PlayerCounterAttackState(this, stateMachine, "CounterAttack");
     }
 
     protected override void Start() {

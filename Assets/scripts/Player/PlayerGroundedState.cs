@@ -16,12 +16,19 @@ public class PlayerGroundedState : PlayerState
     public override void Update() {
         base.Update();
 
+        //玩家反击
+        if (Input.GetKeyDown(KeyCode.Q))
+            stateMachine.ChangeState(player.counterAttack);
+
+        //玩家攻击
         if (Input.GetKeyDown(KeyCode.Mouse0))
             stateMachine.ChangeState(player.primaryAttack);
 
+        //玩家不处于地面，进入空状态
         if (!player.IsGroundDetected())
             stateMachine.ChangeState(player.airState);
 
+        //玩家在地面进行跳跃
         if (Input.GetKeyDown(KeyCode.Space) && player.IsGroundDetected())
             stateMachine.ChangeState(player.jumpState);
     }
