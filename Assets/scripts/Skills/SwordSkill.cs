@@ -41,10 +41,14 @@ public class SwordSkill : Skill
         GameObject newSword = Instantiate(swordPrefab, player.transform.position,transform.rotation);
         SwordSkillController newSwordScript = newSword.GetComponent<SwordSkillController>();
 
-        newSwordScript.SetupSword(finalDir, swordGravity);
+        newSwordScript.SetupSword(finalDir, swordGravity,player);
+
+        player.AssignNewSword(newSword);
 
         DotsActive(false);
     }
+
+    #region 扔剑相关
 
     /// <summary>
     /// 获取剑扔向的位置
@@ -67,7 +71,7 @@ public class SwordSkill : Skill
     private void GenereateDots() {
         dots = new GameObject[numberOfDots];
         for (int i = 0; i < numberOfDots; i++) {
-            dots[i] = Instantiate(dotPrefab, player.transform.position, Quaternion.identity,dotsParents);
+            dots[i] = Instantiate(dotPrefab, player.transform.position, Quaternion.identity, dotsParents);
             dots[i].SetActive(false);
         }
     }
@@ -76,8 +80,9 @@ public class SwordSkill : Skill
         Vector2 position = (Vector2)player.transform.position + new Vector2(
             AimDirection().normalized.x * launchForce.x,
             AimDirection().normalized.y * launchForce.y) * t + 0.5f * (Physics2D.gravity * swordGravity) * (t * t);
-        
+
         return position;
     }
 
+    #endregion
 }

@@ -16,8 +16,8 @@ public class PlayerGroundedState : PlayerState
     public override void Update() {
         base.Update();
 
-        //玩家投掷
-        if (Input.GetKeyDown(KeyCode.Mouse1))
+        //玩家投掷 玩家没有sword
+        if (Input.GetKeyDown(KeyCode.Mouse1) && HasNoSword())
             stateMachine.ChangeState(player.aimSword);
 
         //玩家反击
@@ -35,5 +35,14 @@ public class PlayerGroundedState : PlayerState
         //玩家在地面进行跳跃
         if (Input.GetKeyDown(KeyCode.Space) && player.IsGroundDetected())
             stateMachine.ChangeState(player.jumpState);
+    }
+
+    private bool HasNoSword() {
+        if (!player.sword)
+            return true;
+
+
+        player.sword.GetComponent<SwordSkillController>().ReturnSword();
+        return false;
     }
 }
